@@ -6,6 +6,7 @@ Aplicación web moderna que muestra el clima actual, pronóstico de 5 días y re
 
 WeatherTrip es una aplicación web que permite consultar el clima de cualquier ciudad del mundo con una interfaz moderna y responsiva. Incluye autocompletado inteligente, sistema de favoritos, historial de búsquedas y recomendaciones personalizadas según las condiciones climáticas.
 
+Link para entrar: https://cesar-fex04.github.io/WeatherTrip/index.html
 
 ## Características Principales
 
@@ -74,15 +75,15 @@ npx http-server -p 8000
 ALT + L + O
 ```
 
-## 🌐 APIs Utilizadas
+## APIs Utilizadas
 ```
 **Documentación Oficial:**
-- 📚 Current Weather: https://openweathermap.org/current
-- 📚 Forecast: https://openweathermap.org/forecast5
-- 📚 Geocoding: https://openweathermap.org/api/geocoding-api
+- Current Weather: https://openweathermap.org/current
+- Forecast: https://openweathermap.org/forecast5
+- Geocoding: https://openweathermap.org/api/geocoding-api
 ---
 
-## 💻 Tecnologías
+## Tecnologías
 
 - HTML5
 - CSS3
