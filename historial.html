@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial - WeatherTrip</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header class="navbar-container">
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="index.html">
+                    <i class="bi bi-cloud-sun-fill"></i>
+                    <span>WeatherTrip</span>
+                </a>
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <nav class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">
+                                <i class="bi bi-search"></i> Buscar
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="favoritos.html">
+                                <i class="bi bi-star-fill"></i> Favoritos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="historial.html">
+                                <i class="bi bi-clock-history"></i> Historial
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Contenido de historial -->
+    <main class="container my-5">
+        <section class="history-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>
+                    <i class="bi bi-clock-history"></i>
+                    Historial de Búsquedas
+                </h1>
+                
+                <!-- Botón para limpiar historial -->
+                <button id="clearHistoryBtn" class="btn btn-outline-danger">
+                    <i class="bi bi-trash"></i>
+                    Limpiar Historial
+                </button>
+            </div>
+            
+            <p class="subtitle mb-5">
+                Últimas 10 ciudades que has consultado
+            </p>
+
+            <!-- Lista de historial (se llena con JavaScript) -->
+            <div id="historyList" class="history-list">
+                <!-- Las tarjetas se generan dinámicamente -->
+            </div>
+
+            <!-- Mensaje cuando no hay historial -->
+            <div id="emptyHistory" class="empty-state d-none">
+                <i class="bi bi-clock"></i>
+                <h3>No hay historial de búsquedas</h3>
+                <p>Las ciudades que busques aparecerán aquí</p>
+                <a href="index.html" class="btn btn-primary">
+                    <i class="bi bi-search"></i>
+                    Buscar Ciudad
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container text-center">
+            <p class="mb-2">
+                <i class="bi bi-cloud-sun"></i>
+                WeatherTrip - Tu compañero de viajes
+            </p>
+            <p class="small text-muted">
+                Datos proporcionados por OpenWeatherMap API
+            </p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/storage.js"></script>
+    
+    <!-- Script específico para historial -->
+    <script>
+        // Cuando carga la página, mostrar el historial
+        document.addEventListener('DOMContentLoaded', function() {
+            loadHistory();
+            
+            // Evento para limpiar historial
+            document.getElementById('clearHistoryBtn').addEventListener('click', clearHistory);
+        });
+
+        // Función para cargar y mostrar historial
+        function loadHistory() {
+            const history = Storage.getHistory();
+            const historyList = document.getElementById('historyList');
+            const emptyState = document.getElementById('emptyHistory');
+            const clearBtn = document.getElementById('clearHistoryBtn');
+
+            // Si no hay historial, mostrar mensaje
+            if (history.length === 0) {
+                historyList.classList.add('d-none');
+                emptyState.classList.remove('d-none');
+                clearBtn.classList.add('d-none');
+                return;
+            }
+
+            // Si hay historial, ocultamos el mensaje vacío
+            emptyState.classList.add('d-none');
+            historyList.classList.remove('d-none');
+            clearBtn.classList.remove('d-none');
+
+            // Limpiar lista
+            historyList.innerHTML = '';
+
+            // Crear una COPIA del historial para no modificar el original
+            // Ya viene ordenado de más reciente a más antigua desde storage.js
+            const historyCopy = [...history];
+            
+            // Crear una tarjeta para cada búsqueda
+            historyCopy.forEach((city, index) => {
+                const card = createHistoryCard(city, index);
+                historyList.appendChild(card);
+            });
+        }
+
+        // Crear tarjeta de historial
+        function createHistoryCard(city, index) {
+            const card = document.createElement('article');
+            card.className = 'history-card';
+            
+            // Calcular hace cuánto tiempo fue la búsqueda
+            const timeAgo = getTimeAgo(city.timestamp);
+            
+            card.innerHTML = `
+                <div class="history-number">${index + 1}</div>
+                <div class="history-content">
+                    <h4>${city.name}</h4>
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-clock"></i>
+                        ${timeAgo}
+                    </p>
+                </div>
+                <a href="index.html?city=${encodeURIComponent(city.name)}" class="btn btn-outline-primary">
+                    <i class="bi bi-search"></i>
+                    Ver
+                </a>
+            `;
+
+            return card;
+        }
+
+        // Calcular cuánto tiempo hace de una fecha
+        function getTimeAgo(timestamp) {
+            const now = new Date();
+            const then = new Date(timestamp);
+            const diffMs = now - then;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+
+            if (diffMins < 1) return 'Hace un momento';
+            if (diffMins < 60) return `Hace ${diffMins} minuto${diffMins > 1 ? 's' : ''}`;
+            if (diffHours < 24) return `Hace ${diffHours} hora${diffHours > 1 ? 's' : ''}`;
+            if (diffDays < 7) return `Hace ${diffDays} día${diffDays > 1 ? 's' : ''}`;
+            
+            return then.toLocaleDateString('es-MX');
+        }
+
+        // Limpiar todo el historial
+        function clearHistory() {
+            if (confirm('¿Estás seguro de eliminar todo el historial?')) {
+                Storage.clearHistory();
+                loadHistory(); // Recargar la vista
+            }
+        }
+    </script>
+</body>
+</html>
