@@ -82,9 +82,9 @@ ALT + L + O
 - Forecast: https://openweathermap.org/forecast5
 - Geocoding: https://openweathermap.org/api/geocoding-api
 ---
-
+```
 ## Tecnologías
-
+```
 - HTML5
 - CSS3
 - javaScript 
