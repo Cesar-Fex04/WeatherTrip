@@ -29,8 +29,8 @@ WeatherTrip es una aplicación web que permite consultar el clima de cualquier c
 ### Paso 1: Clonar el Repositorio
 
 ```bash
-git clone 
-cd weather-app
+git clone https://github.com/Cesar-Fex04/WeatherTrip.git
+cd WeatherTrip
 ```
 
 ### Paso 2: Obtener API Key de OpenWeatherMap
